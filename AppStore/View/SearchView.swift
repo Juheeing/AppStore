@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SearchView: View {
         
+    @StateObject private var viewModel = SearchViewModel()
     @FocusState private var isFocus: Bool
     @State var input: String = ""
     @State private var isInputMode: Bool = false
@@ -28,6 +29,11 @@ struct SearchView: View {
                         
                         TextField("게임, 앱, 스토리 등", text: $input)
                             .focused($isFocus)
+                            .submitLabel(.search)
+                            .onSubmit {
+                                viewModel.saveSearchData(input: input)
+                                input = ""
+                            }
                             .onChange(of: isFocus) { newValue in
                                 isInputMode = newValue
                             }
@@ -47,7 +53,7 @@ struct SearchView: View {
             }
             .padding(.init(top: isInputMode ? 10 : 50, leading: 20, bottom: 0, trailing: 20))
             
-            RecentListView()
+            RecentListView(recentSearches: viewModel.recentSearches)
                 .isHidden(hidden: isInputMode, remove: true)
             
             RelatedListView()
@@ -58,18 +64,23 @@ struct SearchView: View {
 }
 
 struct RecentListView: View {
+    
+    let recentSearches: [String]
+    
     var body: some View {
         List {
             Section(header: Text("최근 검색어")
                 .foregroundStyle(.black)
                 .font(.system(size: 20).bold())) {
-                    VStack(alignment: .leading) {
-                        Text("test")
-                            .font(.system(size: 20))
-                            .foregroundStyle(Color(uiColor: .systemBlue))
-                        Divider()
+                    ForEach(recentSearches, id: \.self) { search in
+                        VStack(alignment: .leading) {
+                            Text(search)
+                                .font(.system(size: 20))
+                                .foregroundStyle(Color(uiColor: .systemBlue))
+                            Divider()
+                        }
+                        .listRowSeparator(.hidden)
                     }
-                    .listRowSeparator(.hidden)
             }
         }
         .listStyle(.plain)
