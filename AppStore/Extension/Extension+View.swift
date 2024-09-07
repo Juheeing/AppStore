@@ -12,6 +12,10 @@ extension View {
     @ViewBuilder func isHidden(hidden: Bool = false, remove: Bool = false) -> some View {
         modifier(IsHidden(hidden: hidden, remove: remove))
     }
+    
+    func hiddenNavigationBarStyle() -> some View {
+        modifier( HiddenNavigationBar() )
+    }
 }
 
 struct IsHidden: ViewModifier {
@@ -25,12 +29,6 @@ struct IsHidden: ViewModifier {
         } else {
             content
         }
-    }
-}
-
-extension View {
-    func hiddenNavigationBarStyle() -> some View {
-        modifier( HiddenNavigationBar() )
     }
 }
 
