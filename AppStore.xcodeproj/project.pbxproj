@@ -16,6 +16,7 @@
 		D50C1DE02C8BED970009C42F /* AppStoreUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DDF2C8BED970009C42F /* AppStoreUITestsLaunchTests.swift */; };
 		D50C1DF12C8BF93A0009C42F /* Extension+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DF02C8BF93A0009C42F /* Extension+View.swift */; };
 		D50C1DF32C8C01690009C42F /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DF22C8C01690009C42F /* SearchView.swift */; };
+		D50C1DF52C8C06910009C42F /* TopTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DF42C8C06910009C42F /* TopTitleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		D50C1DDF2C8BED970009C42F /* AppStoreUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		D50C1DF02C8BF93A0009C42F /* Extension+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+View.swift"; sourceTree = "<group>"; };
 		D50C1DF22C8C01690009C42F /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		D50C1DF42C8C06910009C42F /* TopTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTitleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +101,9 @@
 			isa = PBXGroup;
 			children = (
 				D50C1DC22C8BED950009C42F /* AppStoreApp.swift */,
+				D50C1DF62C8C10760009C42F /* Model */,
 				D50C1DEC2C8BF7C50009C42F /* View */,
+				D50C1DF72C8C107F0009C42F /* ViewModel */,
 				D50C1DEF2C8BF91A0009C42F /* Extension */,
 				D50C1DC62C8BED970009C42F /* Assets.xcassets */,
 				D50C1DC82C8BED970009C42F /* Preview Content */,
@@ -136,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				D50C1DC42C8BED950009C42F /* ContentView.swift */,
+				D50C1DF42C8C06910009C42F /* TopTitleView.swift */,
 				D50C1DF22C8C01690009C42F /* SearchView.swift */,
 			);
 			path = View;
@@ -147,6 +152,20 @@
 				D50C1DF02C8BF93A0009C42F /* Extension+View.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		D50C1DF62C8C10760009C42F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D50C1DF72C8C107F0009C42F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D50C1DF32C8C01690009C42F /* SearchView.swift in Sources */,
+				D50C1DF52C8C06910009C42F /* TopTitleView.swift in Sources */,
 				D50C1DC52C8BED950009C42F /* ContentView.swift in Sources */,
 				D50C1DF12C8BF93A0009C42F /* Extension+View.swift in Sources */,
 				D50C1DC32C8BED950009C42F /* AppStoreApp.swift in Sources */,

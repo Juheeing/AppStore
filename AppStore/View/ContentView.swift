@@ -17,7 +17,7 @@ struct ContentView: View {
 
 struct BottomNaviView: View {
     
-    @State var selection: Int = 0
+    @State var selection: Int = 4
     
     var body: some View {
         
@@ -26,30 +26,35 @@ struct BottomNaviView: View {
                 .hiddenNavigationBarStyle()
                 .tabItem {
                     Image(systemName: "list.bullet.rectangle.portrait")
+                    Text("투데이")
                 }
                 .tag(0)
             GameView()
                 .hiddenNavigationBarStyle()
                 .tabItem {
                     Image(systemName: "gamecontroller.fill")
+                    Text("게임")
                 }
                 .tag(1)
             AppView()
                 .hiddenNavigationBarStyle()
                 .tabItem {
                     Image(systemName: "square.stack.3d.up.fill")
+                    Text("앱")
                 }
                 .tag(2)
             ArcadeView()
                 .hiddenNavigationBarStyle()
                 .tabItem {
-                    Image(systemName: "arcade.stick")
+                    Image(systemName: "dpad")
+                    Text("아케이드")
                 }
                 .tag(3)
             SearchView()
                 .hiddenNavigationBarStyle()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
+                    Text("검색")
                 }
                 .tag(4)
         }
