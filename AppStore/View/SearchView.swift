@@ -81,6 +81,7 @@ struct SearchView: View {
             }
             .background(isInputMode || viewModel.searchComplete ? Color(uiColor: .systemGray6) : Color.white)
             .hiddenNavigationBarStyle()
+            .navigationTitle("검색")
         }
     }
 }
@@ -210,7 +211,7 @@ struct SearchAppView: View {
                 .listRowSeparator(.hidden)
                 .padding(.init(top: 20, leading: 10, bottom: 20, trailing: 10))
                 .background(
-                    NavigationLink("", destination: AppDetailView())
+                    NavigationLink("", destination: AppDetailView(app: app))
                         .opacity(0)
                 )
             }
@@ -268,8 +269,122 @@ struct StarView: View {
 }
 
 struct AppDetailView: View {
+    @State private var showTitle: Bool = false
+    let app: AppData
+
     var body: some View {
-        Text("test")
+        VStack {
+            GeometryReader { geo in
+                ScrollView(.vertical, showsIndicators: true) {
+                    VStack(alignment: .leading) {
+                        AppDetailTitleView(app: app)
+                        Divider()
+                        AppDetailScreenView(app: app)
+                        
+                    }
+                    .frame(maxHeight: .infinity)
+                    .background(GeometryReader { geo in
+                        Color.clear
+                            .onAppear {
+                                updateTitleVisibility(geo: geo)
+                            }
+                            .onChange(of: geo.frame(in: .global).minY) { _ in
+                                updateTitleVisibility(geo: geo)
+                            }
+                    })
+                }
+            }
+            .navigationTitle(showTitle ? app.trackName : "")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    if showTitle {
+                        AsyncImage(url: URL(string: app.artworkUrl100)) { image in
+                            image.resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 25, height: 25)
+                                .clipShape(RoundedRectangle(cornerRadius: 5))
+                        } placeholder: {
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color(uiColor: .systemGray6))
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 25, height: 25)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func updateTitleVisibility(geo: GeometryProxy) {
+        let offset = geo.frame(in: .global).minY
+        showTitle = offset < -10
+    }
+}
+
+struct AppDetailTitleView: View {
+    
+    let app: AppData
+    
+    var body: some View {
+        HStack(spacing: 20) {
+            AsyncImage(url: URL(string: app.artworkUrl100)) { image in
+                image.resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 110, height: 110)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+            } placeholder: {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(uiColor: .systemGray6))
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 110, height: 110)
+            }
+            
+            VStack(alignment: .leading) {
+                Text(app.trackName)
+                    .font(.system(size: 20).bold())
+                
+                Spacer()
+                
+                Button {
+                    
+                } label: {
+                    Text("받기")
+                        .frame(width: 70, height: 30)
+                        .font(.system(size: 16).bold())
+                        .foregroundStyle(Color.white)
+                        .background(Color(uiColor: .systemBlue), in: Capsule())
+                }
+            }
+            
+            Spacer()
+        }
+        .padding(.init(top: 20, leading: 20, bottom: 20, trailing: 20))
+    }
+}
+
+struct AppDetailScreenView: View {
+    
+    let app: AppData
+    
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                ForEach(app.screenshotUrls, id: \.self) { url in
+                    AsyncImage(url: URL(string: url)) { image in
+                        image.resizable()
+                            .frame(width: 250, height: 450)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                    } placeholder: {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color(uiColor: .systemGray6))
+                            .frame(width: 250, height: 450)
+                    }
+                }
+            }
+            .padding(.leading, 20)
+            .frame(maxHeight: .infinity)
+        }
     }
 }
 
