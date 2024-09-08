@@ -50,35 +50,35 @@ struct SearchView: View {
                     
                     Button(action: {
                         isFocus = false
+                        viewModel.searchComplete = false
                         isInputMode = false
                         input = ""
-                        viewModel.searchComplete = false
                     }, label: {
                         Text("취소")
                     })
-                    .isHidden(hidden: !isInputMode, remove: true)
+                    .isHidden(hidden: !isInputMode && !viewModel.searchComplete, remove: true)
                 }
             }
             .padding(.init(top: isInputMode || viewModel.searchComplete ? 10 : 50, leading: 20, bottom: 0, trailing: 20))
-            
-            RecentListView(recentSearches: viewModel.recentSearches, onSearch: { search in
-                isInputMode = true
-                input = search
-                viewModel.saveSearchData(input: input, global: global)
-            }).isHidden(hidden: isInputMode || viewModel.searchComplete, remove: true)
-            
-            RelatedListView(results: filteredResults, onSearch: { search in
-                isInputMode = true
-                input = search
-                viewModel.saveSearchData(input: input, global: global)
-            }).isHidden(hidden: !isInputMode || viewModel.searchComplete, remove: true)
-            
-            SearchAppView(apps: viewModel.searchResults)
-                .isHidden(hidden: !viewModel.searchComplete, remove: true)
-            
-        }
-        .background(isInputMode ? Color(uiColor: .systemGray6) : Color.white)
 
+            if viewModel.searchComplete {
+                SearchAppView(apps: viewModel.searchResults)
+            } else if isFocus {
+                RelatedListView(results: filteredResults, onSearch: { search in
+                    isInputMode = true
+                    input = search
+                    viewModel.saveSearchData(input: input, global: global)
+                })
+            } else {
+                RecentListView(recentSearches: viewModel.recentSearches, onSearch: { search in
+                    isFocus = true
+                    isInputMode = true
+                    input = search
+                    viewModel.saveSearchData(input: input, global: global)
+                })
+            }
+        }
+        .background(isInputMode || viewModel.searchComplete ? Color(uiColor: .systemGray6) : Color.white)
     }
 }
 
@@ -148,61 +148,68 @@ struct SearchAppView: View {
     
     var body: some View {
         
-        List(apps) { app in
-            VStack(alignment: .leading, spacing: 30) {
-                HStack {
-                    // 앱 아이콘
-                    AsyncImage(url: URL(string: app.artworkUrl100)) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 60, height: 60)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                    } placeholder: {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(uiColor: .systemGray6))
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 60, height: 60)
-                    }
-                    
-                    VStack(alignment: .leading) {
-                        Text(app.trackName)
-                            .font(.system(size: 15))
-
-                        HStack {
-                            HStack(spacing: 1) {
-                                ForEach(0..<5) { index in
-                                    StarView(isFilled: index < Int(app.averageUserRating ?? 0))
-                                        .frame(width: 12, height: 12)
-                                }
-                            }
-                            
-                            Text(formattedRatingCount(app.userRatingCount ?? 0))
-                                .font(.system(size: 12))
-                                .foregroundColor(Color(uiColor: .systemGray2))
-                        }
-                    }
-                }
-                
-                // 최대 3개의 스크린샷을 표시
-                HStack(spacing: 10) {
-                    ForEach(app.screenshotUrls.prefix(3), id: \.self) { url in
-                        AsyncImage(url: URL(string: url)) { image in
+        VStack(spacing: 0) {
+            
+            Divider()
+                .background(Color(uiColor: .systemGray))
+            
+            List(apps) { app in
+                VStack(alignment: .leading, spacing: 30) {
+                    HStack {
+                        // 앱 아이콘
+                        AsyncImage(url: URL(string: app.artworkUrl100)) { image in
                             image.resizable()
                                 .aspectRatio(contentMode: .fit)
+                                .frame(width: 60, height: 60)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                         } placeholder: {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color(uiColor: .systemGray6))
                                 .aspectRatio(contentMode: .fit)
+                                .frame(width: 60, height: 60)
+                        }
+                        
+                        VStack(alignment: .leading) {
+                            Text(app.trackName)
+                                .font(.system(size: 15))
+                            
+                            HStack {
+                                HStack(spacing: 1) {
+                                    ForEach(0..<5) { index in
+                                        StarView(isFilled: index < Int(app.averageUserRating ?? 0))
+                                            .frame(width: 12, height: 12)
+                                    }
+                                }
+                                
+                                Text(formattedRatingCount(app.userRatingCount ?? 0))
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color(uiColor: .systemGray2))
+                            }
                         }
                     }
+                    
+                    // 최대 3개의 스크린샷을 표시
+                    HStack(spacing: 10) {
+                        ForEach(app.screenshotUrls.prefix(3), id: \.self) { url in
+                            AsyncImage(url: URL(string: url)) { image in
+                                image.resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                            } placeholder: {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color(uiColor: .systemGray6))
+                                    .aspectRatio(contentMode: .fit)
+                            }
+                        }
+                    }
+                    .isHidden(hidden: app.screenshotUrls.isEmpty, remove: true)
                 }
-                .isHidden(hidden: app.screenshotUrls.isEmpty, remove: true)
+                .listRowSeparator(.hidden)
+                .padding(.init(top: 20, leading: 10, bottom: 20, trailing: 10))
             }
-            .listRowSeparator(.hidden)
-            .padding(.init(top: 20, leading: 10, bottom: 20, trailing: 10))
+            .listStyle(.plain)
         }
-        .listStyle(.plain)
+        .background(Color.white)
     }
     
     private func starFill(for index: Int, rating: Double) -> Double {
