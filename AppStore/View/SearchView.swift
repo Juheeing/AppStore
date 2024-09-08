@@ -34,7 +34,6 @@ struct SearchView: View {
                             .submitLabel(.search)
                             .onSubmit {
                                 viewModel.saveSearchData(input: input, global: global)
-                                input = ""
                             }
                             .onChange(of: isFocus) { newValue in
                                 isInputMode = newValue
@@ -52,6 +51,8 @@ struct SearchView: View {
                     Button(action: {
                         isFocus = false
                         isInputMode = false
+                        input = ""
+                        viewModel.searchComplete = false
                     }, label: {
                         Text("취소")
                     })
@@ -60,11 +61,17 @@ struct SearchView: View {
             }
             .padding(.init(top: isInputMode || viewModel.searchComplete ? 10 : 50, leading: 20, bottom: 0, trailing: 20))
             
-            RecentListView(recentSearches: viewModel.recentSearches)
-                .isHidden(hidden: isInputMode || viewModel.searchComplete, remove: true)
+            RecentListView(recentSearches: viewModel.recentSearches, onSearch: { search in
+                isInputMode = true
+                input = search
+                viewModel.saveSearchData(input: input, global: global)
+            }).isHidden(hidden: isInputMode || viewModel.searchComplete, remove: true)
             
-            RelatedListView(results: filteredResults)
-                .isHidden(hidden: !isInputMode || viewModel.searchComplete, remove: true)
+            RelatedListView(results: filteredResults, onSearch: { search in
+                isInputMode = true
+                input = search
+                viewModel.saveSearchData(input: input, global: global)
+            }).isHidden(hidden: !isInputMode || viewModel.searchComplete, remove: true)
             
             SearchAppView(apps: viewModel.searchResults)
                 .isHidden(hidden: !viewModel.searchComplete, remove: true)
@@ -78,20 +85,24 @@ struct SearchView: View {
 struct RecentListView: View {
     
     let recentSearches: [String]
+    var onSearch: (String) -> Void
     
     var body: some View {
         List {
             Section(header: Text("최근 검색어")
                 .foregroundStyle(.black)
                 .font(.system(size: 20).bold())) {
-                    ForEach(recentSearches, id: \.self) { search in
+                    ForEach(recentSearches, id: \.self) { result in
                         VStack(alignment: .leading) {
-                            Text(search)
+                            Text(result)
                                 .font(.system(size: 20))
                                 .foregroundStyle(Color(uiColor: .systemBlue))
                             Divider()
                         }
                         .listRowSeparator(.hidden)
+                        .onTapGesture {
+                            onSearch(result)
+                        }
                     }
             }
         }
@@ -102,6 +113,7 @@ struct RecentListView: View {
 struct RelatedListView: View {
     
     let results: [String]  // 필터링된 검색어 목록
+    var onSearch: (String) -> Void
     
     var body: some View {
         VStack(spacing: 0) {
@@ -118,6 +130,9 @@ struct RelatedListView: View {
                         Text(result)  // 필터링된 검색어 표시
                             .font(.system(size: 15))
                             .foregroundStyle(Color.black)
+                    }
+                    .onTapGesture {
+                        onSearch(result)
                     }
                 }
             }
@@ -152,7 +167,7 @@ struct SearchAppView: View {
                     VStack(alignment: .leading) {
                         Text(app.trackName)
                             .font(.system(size: 15))
-                        
+
                         HStack {
                             HStack(spacing: 1) {
                                 ForEach(0..<5) { index in
