@@ -31,7 +31,7 @@ struct AppData: Codable, Identifiable {
         case trackName
         case averageUserRating
         case userRatingCount
-        case description
+        case description = "description"
         case artworkUrl100
     }
 }

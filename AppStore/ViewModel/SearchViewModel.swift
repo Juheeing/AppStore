@@ -16,6 +16,7 @@ class SearchViewModel: ObservableObject {
     }
     
     @Published var searchResults: [AppData] = []
+    @Published var searchComplete: Bool = false
     
     private let searchesKey = "recentSearches"
     
@@ -51,9 +52,13 @@ class SearchViewModel: ObservableObject {
                 }
             } catch {
                 print("Error decoding: \(error)")
+                DispatchQueue.main.async {
+                    global.hideLoading()
+                }
             }
             DispatchQueue.main.async {
                 global.hideLoading()
+                self.searchComplete = true
             }
         }
     }

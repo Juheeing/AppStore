@@ -65,6 +65,8 @@ struct BottomNaviView: View {
         }
         .accentColor(Color(uiColor: .systemBlue))
         .onAppear {
+            let appearance = UITabBarAppearance()
+            UITabBar.appearance().scrollEdgeAppearance = appearance
             UITabBar.appearance().backgroundColor = UIColor(Color(uiColor: .systemGray6))
             UITabBar.appearance().barTintColor = UIColor(Color(uiColor: .systemGray))
         }

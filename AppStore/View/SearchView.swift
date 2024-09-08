@@ -22,7 +22,7 @@ struct SearchView: View {
             VStack {
                 TopTitleView(title: "검색")
                     .transition(.move(edge: .top))
-                    .isHidden(hidden: isInputMode, remove: true)
+                    .isHidden(hidden: isInputMode || viewModel.searchComplete, remove: true)
                 
                 HStack(spacing: 10) {
                     HStack {
@@ -58,13 +58,17 @@ struct SearchView: View {
                     .isHidden(hidden: !isInputMode, remove: true)
                 }
             }
-            .padding(.init(top: isInputMode ? 10 : 50, leading: 20, bottom: 0, trailing: 20))
+            .padding(.init(top: isInputMode || viewModel.searchComplete ? 10 : 50, leading: 20, bottom: 0, trailing: 20))
             
             RecentListView(recentSearches: viewModel.recentSearches)
-                .isHidden(hidden: isInputMode, remove: true)
+                .isHidden(hidden: isInputMode || viewModel.searchComplete, remove: true)
             
             RelatedListView(results: filteredResults)
-                .isHidden(hidden: !isInputMode, remove: true)
+                .isHidden(hidden: !isInputMode || viewModel.searchComplete, remove: true)
+            
+            SearchAppView(apps: viewModel.searchResults)
+                .isHidden(hidden: !viewModel.searchComplete, remove: true)
+            
         }
         .background(isInputMode ? Color(uiColor: .systemGray6) : Color.white)
 
@@ -120,6 +124,115 @@ struct RelatedListView: View {
             .listStyle(.plain)
         }
         .background(Color.white)
+    }
+}
+
+struct SearchAppView: View {
+    
+    let apps: [AppData]
+    
+    var body: some View {
+        
+        List(apps) { app in
+            VStack(alignment: .leading, spacing: 30) {
+                HStack {
+                    // 앱 아이콘
+                    AsyncImage(url: URL(string: app.artworkUrl100)) { image in
+                        image.resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    } placeholder: {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color(uiColor: .systemGray6))
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Text(app.trackName)
+                            .font(.system(size: 15))
+                        
+                        HStack {
+                            HStack(spacing: 1) {
+                                ForEach(0..<5) { index in
+                                    StarView(isFilled: index < Int(app.averageUserRating ?? 0))
+                                        .frame(width: 12, height: 12)
+                                }
+                            }
+                            
+                            Text(formattedRatingCount(app.userRatingCount ?? 0))
+                                .font(.system(size: 12))
+                                .foregroundColor(Color(uiColor: .systemGray2))
+                        }
+                    }
+                }
+                
+                // 최대 3개의 스크린샷을 표시
+                HStack(spacing: 10) {
+                    ForEach(app.screenshotUrls.prefix(3), id: \.self) { url in
+                        AsyncImage(url: URL(string: url)) { image in
+                            image.resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                        } placeholder: {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(uiColor: .systemGray6))
+                                .aspectRatio(contentMode: .fit)
+                        }
+                    }
+                }
+                .isHidden(hidden: app.screenshotUrls.isEmpty, remove: true)
+            }
+            .listRowSeparator(.hidden)
+            .padding(.init(top: 20, leading: 10, bottom: 20, trailing: 10))
+        }
+        .listStyle(.plain)
+    }
+    
+    private func starFill(for index: Int, rating: Double) -> Double {
+        let starValue = rating - Double(index)
+        if starValue >= 1 {
+            return 1.0 // 완전히 채워진 별
+        } else if starValue > 0 {
+            return starValue // 부분적으로 채워진 별
+        } else {
+            return 0.0 // 채워지지 않은 별
+        }
+    }
+    
+    private func formattedRatingCount(_ count: Int) -> String {
+        if count >= 10_000 {
+            // 만 단위로 표시 (예: 1.1만)
+            let formatted = Double(count) / 10_000
+            return String(format: "%.1f만", formatted)
+        } else {
+            // 10,000 미만일 때는 그냥 숫자로 표시
+            return "\(count)"
+        }
+    }
+}
+
+struct StarView: View {
+    
+    var isFilled: Bool
+    
+    var body: some View {
+        ZStack {
+            // 빈 별 테두리
+            Image(systemName: "star")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(.gray)
+            
+            // 별점이 1 이상일 때 채워진 별
+            if isFilled {
+                Image(systemName: "star.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.gray)
+            }
+        }
     }
 }
 
