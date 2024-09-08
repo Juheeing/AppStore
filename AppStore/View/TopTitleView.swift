@@ -10,12 +10,20 @@ import SwiftUI
 struct TopTitleView: View {
     
     var title: String
+    var date: Date?
     
     var body: some View {
         
         HStack {
-            Text(title)
-                .font(.system(size: 35).bold())
+            VStack(alignment: .leading, spacing: 5) {
+                if let date = date {
+                    Text(dateFormatted(date))
+                        .font(.system(size: 12).bold())
+                        .foregroundColor(Color(uiColor: .systemGray))
+                }
+                Text(title)
+                    .font(.system(size: 35).bold())
+            }
             Spacer()
             Button(action: {
                 
@@ -25,6 +33,13 @@ struct TopTitleView: View {
                     .foregroundColor(Color(uiColor: .systemBlue))
             })
         }
+    }
+    
+    private func dateFormatted(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR") // 한국어 로케일 설정
+        formatter.dateFormat = "M월 d일 EEEE"
+        return formatter.string(from: date)
     }
 }
 

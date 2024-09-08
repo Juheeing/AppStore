@@ -87,25 +87,41 @@ struct IndicatorView: View {
 
 struct TodayView: View {
     var body: some View {
-        Text("투데이")
+        VStack {
+            TopTitleView(title: "투데이", date: Date())
+            Spacer()
+        }
+        .padding(.init(top: 50, leading: 20, bottom: 0, trailing: 20))
     }
 }
 
 struct GameView: View {
     var body: some View {
-        Text("게임")
+        VStack {
+            TopTitleView(title: "게임")
+            Spacer()
+        }
+        .padding(.init(top: 50, leading: 20, bottom: 0, trailing: 20))
     }
 }
 
 struct AppView: View {
     var body: some View {
-        Text("앱")
+        VStack {
+            TopTitleView(title: "앱")
+            Spacer()
+        }
+        .padding(.init(top: 50, leading: 20, bottom: 0, trailing: 20))
     }
 }
 
 struct ArcadeView: View {
     var body: some View {
-        Text("아케이드")
+        VStack {
+            TopTitleView(title: "아케이드")
+            Spacer()
+        }
+        .padding(.init(top: 50, leading: 20, bottom: 0, trailing: 20))
     }
 }
 
