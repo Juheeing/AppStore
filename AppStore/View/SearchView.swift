@@ -13,6 +13,7 @@ struct SearchView: View {
     @FocusState private var isFocus: Bool
     @State var input: String = ""
     @State private var isInputMode: Bool = false
+    @State private var filteredResults: [String] = []
     
     var body: some View {
         
@@ -37,6 +38,11 @@ struct SearchView: View {
                             .onChange(of: isFocus) { newValue in
                                 isInputMode = newValue
                             }
+                            .onChange(of: input) { newValue in
+                                isInputMode = true
+                                // 입력된 텍스트와 일치하거나 포함된 recentSearches 항목 필터링
+                                filteredResults = viewModel.recentSearches.filter { $0.contains(newValue) }
+                            }
                     }
                     .padding(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                     .background(Color(uiColor: .systemGray5))
@@ -56,7 +62,7 @@ struct SearchView: View {
             RecentListView(recentSearches: viewModel.recentSearches)
                 .isHidden(hidden: isInputMode, remove: true)
             
-            RelatedListView()
+            RelatedListView(results: filteredResults)
                 .isHidden(hidden: !isInputMode, remove: true)
         }
         .background(isInputMode ? Color(uiColor: .systemGray6) : Color.white)
@@ -88,20 +94,26 @@ struct RecentListView: View {
 }
 
 struct RelatedListView: View {
+    
+    let results: [String]  // 필터링된 검색어 목록
+    
     var body: some View {
         VStack(spacing: 0) {
+            
             Divider()
                 .background(Color(uiColor: .systemGray))
+            
             List {
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(Color(uiColor: .systemGray))
-                    
-                    Text("test")
-                        .font(.system(size: 15))
-                        .foregroundStyle(Color.black)
+                ForEach(results, id: \.self) { result in  // ForEach 사용
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundStyle(Color(uiColor: .systemGray))
+                        
+                        Text(result)  // 필터링된 검색어 표시
+                            .font(.system(size: 15))
+                            .foregroundStyle(Color.black)
+                    }
                 }
-                .listRowSeparator(.hidden, edges: .top)
             }
             .listStyle(.plain)
         }

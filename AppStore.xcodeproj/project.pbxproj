@@ -18,6 +18,7 @@
 		D50C1DF32C8C01690009C42F /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DF22C8C01690009C42F /* SearchView.swift */; };
 		D50C1DF52C8C06910009C42F /* TopTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DF42C8C06910009C42F /* TopTitleView.swift */; };
 		D50C1DF92C8C44AC0009C42F /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DF82C8C44AC0009C42F /* SearchViewModel.swift */; };
+		D50C1DFD2C8D29380009C42F /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DFC2C8D29380009C42F /* SearchModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		D50C1DF22C8C01690009C42F /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		D50C1DF42C8C06910009C42F /* TopTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTitleView.swift; sourceTree = "<group>"; };
 		D50C1DF82C8C44AC0009C42F /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		D50C1DFC2C8D29380009C42F /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 		D50C1DF62C8C10760009C42F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D50C1DFC2C8D29380009C42F /* SearchModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 				D50C1DF32C8C01690009C42F /* SearchView.swift in Sources */,
 				D50C1DF52C8C06910009C42F /* TopTitleView.swift in Sources */,
 				D50C1DC52C8BED950009C42F /* ContentView.swift in Sources */,
+				D50C1DFD2C8D29380009C42F /* SearchModel.swift in Sources */,
 				D50C1DF12C8BF93A0009C42F /* Extension+View.swift in Sources */,
 				D50C1DC32C8BED950009C42F /* AppStoreApp.swift in Sources */,
 			);
