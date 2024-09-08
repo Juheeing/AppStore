@@ -20,6 +20,7 @@
 		D50C1DF92C8C44AC0009C42F /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DF82C8C44AC0009C42F /* SearchViewModel.swift */; };
 		D50C1DFD2C8D29380009C42F /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DFC2C8D29380009C42F /* SearchModel.swift */; };
 		D50C1DFF2C8D2E420009C42F /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1DFE2C8D2E420009C42F /* Global.swift */; };
+		D50C1E022C8D3B910009C42F /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50C1E012C8D3B910009C42F /* SearchAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		D50C1DF82C8C44AC0009C42F /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		D50C1DFC2C8D29380009C42F /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
 		D50C1DFE2C8D2E420009C42F /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
+		D50C1E012C8D3B910009C42F /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				D50C1DFE2C8D2E420009C42F /* Global.swift */,
+				D50C1E012C8D3B910009C42F /* SearchAPI.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				D50C1DFD2C8D29380009C42F /* SearchModel.swift in Sources */,
 				D50C1DF12C8BF93A0009C42F /* Extension+View.swift in Sources */,
 				D50C1DC32C8BED950009C42F /* AppStoreApp.swift in Sources */,
+				D50C1E022C8D3B910009C42F /* SearchAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,44 +35,27 @@ class SearchViewModel: ObservableObject {
         // 배열의 앞에 삽입
         recentSearches.insert(input, at: 0)
         
-        searchApp(input: input, global: global)  // 검색어 저장 후 앱 검색
-    }
-    
-    // iTunes Search API 호출 함수
-    func searchApp(input: String, global: Global) {
-        let searchTerm = input.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let urlString = "https://itunes.apple.com/search?term=\(searchTerm)&entity=software"
-        
-        guard let url = URL(string: urlString) else { return }
-        
-        // 로딩 시작
         global.showLoading()
-
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            defer {
-                // 비동기 작업이 끝나면 로딩 종료
-                DispatchQueue.main.async {
-                    global.hideLoading()
-                }
+        
+        SearchAPI.searchApps(term: input) { data, response, error in
+            guard error == nil, let response = response as? HTTPURLResponse, let data = data else {
+                return
             }
-            
-            if let data = data {
-                do {
-                    let result = try JSONDecoder().decode(SearchResult.self, from: data)
-                    DispatchQueue.main.async {
-                        self.searchResults = result.results
-                        for app in result.results {
-                            print("앱 이름: \(app.trackName), 설명: \(app.description)")
-                        }
+            do {
+                let result = try JSONDecoder().decode(SearchResult.self, from: data)
+                DispatchQueue.main.async {
+                    self.searchResults = result.results
+                    for app in result.results {
+                        print("앱 이름: \(app.trackName), 별점: \(String(describing: app.averageUserRating)), 별점 개수: \(String(describing: app.userRatingCount))")
                     }
-                } catch {
-                    print("Error decoding: \(error)")
                 }
-            } else if let error = error {
-                print("Error fetching data: \(error)")
+            } catch {
+                print("Error decoding: \(error)")
+            }
+            DispatchQueue.main.async {
+                global.hideLoading()
             }
         }
-        task.resume()
     }
     
     // UserDefaults에 검색어를 저장
