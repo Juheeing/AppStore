@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SearchView: View {
         
+    @EnvironmentObject var global: Global
     @StateObject private var viewModel = SearchViewModel()
     @FocusState private var isFocus: Bool
     @State var input: String = ""
@@ -32,7 +33,7 @@ struct SearchView: View {
                             .focused($isFocus)
                             .submitLabel(.search)
                             .onSubmit {
-                                viewModel.saveSearchData(input: input)
+                                viewModel.saveSearchData(input: input, global: global)
                                 input = ""
                             }
                             .onChange(of: isFocus) { newValue in
@@ -66,6 +67,7 @@ struct SearchView: View {
                 .isHidden(hidden: !isInputMode, remove: true)
         }
         .background(isInputMode ? Color(uiColor: .systemGray6) : Color.white)
+
     }
 }
 

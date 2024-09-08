@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject private var global = Global()
+    
     var body: some View {
-        VStack {
+        ZStack {
             BottomNaviView()
+            IndicatorView(color: .gray).isHidden(hidden: !global.isLoading, remove: false)
         }
+        .environmentObject(global)
     }
 }
 
@@ -63,6 +68,18 @@ struct BottomNaviView: View {
             UITabBar.appearance().backgroundColor = UIColor(Color(uiColor: .systemGray6))
             UITabBar.appearance().barTintColor = UIColor(Color(uiColor: .systemGray))
         }
+    }
+}
+
+struct IndicatorView: View {
+    
+    var color: Color
+    
+    var body: some View {
+        ProgressView()
+            .scaleEffect(2.0, anchor: .center)
+            .progressViewStyle(CircularProgressViewStyle(tint: color))
+            
     }
 }
 
