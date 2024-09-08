@@ -18,67 +18,70 @@ struct SearchView: View {
     
     var body: some View {
         
-        VStack {
+        NavigationView {
             VStack {
-                TopTitleView(title: "검색")
-                    .transition(.move(edge: .top))
-                    .isHidden(hidden: isInputMode || viewModel.searchComplete, remove: true)
-                
-                HStack(spacing: 10) {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundStyle(Color(uiColor: .systemGray))
-                        
-                        TextField("게임, 앱, 스토리 등", text: $input)
-                            .focused($isFocus)
-                            .submitLabel(.search)
-                            .onSubmit {
-                                viewModel.saveSearchData(input: input, global: global)
-                            }
-                            .onChange(of: isFocus) { newValue in
-                                isInputMode = newValue
-                            }
-                            .onChange(of: input) { newValue in
-                                isInputMode = true
-                                // 입력된 텍스트와 일치하거나 포함된 recentSearches 항목 필터링
-                                filteredResults = viewModel.recentSearches.filter { $0.contains(newValue) }
-                            }
-                    }
-                    .padding(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .background(Color(uiColor: .systemGray5))
-                    .cornerRadius(7)
+                VStack {
+                    TopTitleView(title: "검색")
+                        .transition(.move(edge: .top))
+                        .isHidden(hidden: isInputMode || viewModel.searchComplete, remove: true)
                     
-                    Button(action: {
-                        isFocus = false
-                        viewModel.searchComplete = false
-                        isInputMode = false
-                        input = ""
-                    }, label: {
-                        Text("취소")
+                    HStack(spacing: 10) {
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundStyle(Color(uiColor: .systemGray))
+                            
+                            TextField("게임, 앱, 스토리 등", text: $input)
+                                .focused($isFocus)
+                                .submitLabel(.search)
+                                .onSubmit {
+                                    viewModel.saveSearchData(input: input, global: global)
+                                }
+                                .onChange(of: isFocus) { newValue in
+                                    isInputMode = newValue
+                                }
+                                .onChange(of: input) { newValue in
+                                    isInputMode = true
+                                    // 입력된 텍스트와 일치하거나 포함된 recentSearches 항목 필터링
+                                    filteredResults = viewModel.recentSearches.filter { $0.contains(newValue) }
+                                }
+                        }
+                        .padding(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
+                        .background(Color(uiColor: .systemGray5))
+                        .cornerRadius(7)
+                        
+                        Button(action: {
+                            isFocus = false
+                            viewModel.searchComplete = false
+                            isInputMode = false
+                            input = ""
+                        }, label: {
+                            Text("취소")
+                        })
+                        .isHidden(hidden: !isInputMode && !viewModel.searchComplete, remove: true)
+                    }
+                }
+                .padding(.init(top: isInputMode || viewModel.searchComplete ? 10 : 50, leading: 20, bottom: 0, trailing: 20))
+                
+                if viewModel.searchComplete {
+                    SearchAppView(apps: viewModel.searchResults)
+                } else if isFocus {
+                    RelatedListView(results: filteredResults, onSearch: { search in
+                        isInputMode = true
+                        input = search
+                        viewModel.saveSearchData(input: input, global: global)
                     })
-                    .isHidden(hidden: !isInputMode && !viewModel.searchComplete, remove: true)
+                } else {
+                    RecentListView(recentSearches: viewModel.recentSearches, onSearch: { search in
+                        isFocus = true
+                        isInputMode = true
+                        input = search
+                        viewModel.saveSearchData(input: input, global: global)
+                    })
                 }
             }
-            .padding(.init(top: isInputMode || viewModel.searchComplete ? 10 : 50, leading: 20, bottom: 0, trailing: 20))
-
-            if viewModel.searchComplete {
-                SearchAppView(apps: viewModel.searchResults)
-            } else if isFocus {
-                RelatedListView(results: filteredResults, onSearch: { search in
-                    isInputMode = true
-                    input = search
-                    viewModel.saveSearchData(input: input, global: global)
-                })
-            } else {
-                RecentListView(recentSearches: viewModel.recentSearches, onSearch: { search in
-                    isFocus = true
-                    isInputMode = true
-                    input = search
-                    viewModel.saveSearchData(input: input, global: global)
-                })
-            }
+            .background(isInputMode || viewModel.searchComplete ? Color(uiColor: .systemGray6) : Color.white)
+            .hiddenNavigationBarStyle()
         }
-        .background(isInputMode || viewModel.searchComplete ? Color(uiColor: .systemGray6) : Color.white)
     }
 }
 
@@ -147,7 +150,7 @@ struct SearchAppView: View {
     let apps: [AppData]
     
     var body: some View {
-        
+                    
         VStack(spacing: 0) {
             
             Divider()
@@ -206,11 +209,16 @@ struct SearchAppView: View {
                 }
                 .listRowSeparator(.hidden)
                 .padding(.init(top: 20, leading: 10, bottom: 20, trailing: 10))
+                .background(
+                    NavigationLink("", destination: AppDetailView())
+                        .opacity(0)
+                )
             }
             .listStyle(.plain)
         }
         .background(Color.white)
     }
+    
     
     private func starFill(for index: Int, rating: Double) -> Double {
         let starValue = rating - Double(index)
@@ -232,6 +240,7 @@ struct SearchAppView: View {
             // 10,000 미만일 때는 그냥 숫자로 표시
             return "\(count)"
         }
+        
     }
 }
 
@@ -255,6 +264,12 @@ struct StarView: View {
                     .foregroundColor(.gray)
             }
         }
+    }
+}
+
+struct AppDetailView: View {
+    var body: some View {
+        Text("test")
     }
 }
 
