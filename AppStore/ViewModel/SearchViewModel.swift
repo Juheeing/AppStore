@@ -24,46 +24,46 @@ class SearchViewModel: ObservableObject {
         loadSearches()
     }
     
-    // 검색어를 UserDefaults에 저장하는 함수
+    // 검색어 저장 함수
     func saveSearchData(input: String, global: Global) {
         guard !input.isEmpty else { return }
-            
-        // 배열에 이미 있는 경우 기존 값을 제거
+        
         if let index = recentSearches.firstIndex(of: input) {
             recentSearches.remove(at: index)
         }
-        
-        // 배열의 앞에 삽입
         recentSearches.insert(input, at: 0)
         
         global.showLoading()
         
         SearchAPI.searchApps(term: input) { data, response, error in
-            guard error == nil, let response = response as? HTTPURLResponse, let data = data else {
-                return
-            }
-            do {
-                let result = try JSONDecoder().decode(SearchResult.self, from: data)
-                DispatchQueue.main.async {
-                    self.searchResults = result.results
-                    for app in result.results {
-                        print("앱 이름: \(app.trackName), 별점: \(String(describing: app.averageUserRating)), 별점 개수: \(String(describing: app.userRatingCount))")
-                    }
-                }
-            } catch {
-                print("Error decoding: \(error)")
-                DispatchQueue.main.async {
-                    global.hideLoading()
-                }
-            }
             DispatchQueue.main.async {
                 global.hideLoading()
-                self.searchComplete = true
+                guard error == nil, let response = response as? HTTPURLResponse, let data = data else {
+                    print("네트워크 오류: \(String(describing: error))")
+                    return
+                }
+                
+                switch response.statusCode {
+                case 200...299:
+                    do {
+                        let result = try JSONDecoder().decode(SearchResult.self, from: data)
+                        self.searchResults = result.results
+                        self.searchComplete = true
+                    } catch {
+                        print("디코딩 오류: \(error.localizedDescription)")
+                    }
+                case 400...499:
+                    print("클라이언트 오류: \(response.statusCode)")
+                case 500...599:
+                    print("서버 오류: \(response.statusCode)")
+                default:
+                    print("알 수 없는 상태 코드: \(response.statusCode)")
+                }
             }
         }
     }
     
-    // UserDefaults에 검색어를 저장
+    // UserDefaults에 검색어 저장
     private func saveSearches() {
         UserDefaults.standard.set(recentSearches, forKey: searchesKey)
     }

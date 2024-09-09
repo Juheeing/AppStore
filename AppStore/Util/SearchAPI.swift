@@ -18,21 +18,25 @@ class SearchAPI {
         return components
     }
     
+    // 앱 검색 API 요청 함수
     static func searchApps(term: String, completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
         
         var components = urlComponents
         components.path = "/search"
         components.queryItems = [
             URLQueryItem(name: "entity", value: "software"),
-            URLQueryItem(name: "term", value: term) ]
-            
+            URLQueryItem(name: "term", value: term)
+        ]
+        
         guard let url = components.url else {
+            print("URL 생성 실패")
             return
         }
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        dataTask = URLSession.shared.dataTask(with: url, completionHandler: completion)
+        dataTask = URLSession.shared.dataTask(with: request, completionHandler: completion)
         dataTask?.resume()
     }
 }

@@ -40,9 +40,10 @@ struct SearchView: View {
                                     isInputMode = newValue
                                 }
                                 .onChange(of: input) { newValue in
-                                    isInputMode = true
-                                    // 입력된 텍스트와 일치하거나 포함된 recentSearches 항목 필터링
-                                    filteredResults = viewModel.recentSearches.filter { $0.contains(newValue) }
+                                    if newValue != "" {
+                                        isInputMode = true
+                                        filteredResults = viewModel.recentSearches.filter { $0.contains(newValue) }
+                                    }
                                 }
                         }
                         .padding(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
@@ -72,7 +73,6 @@ struct SearchView: View {
                     })
                 } else {
                     RecentListView(recentSearches: viewModel.recentSearches, onSearch: { search in
-                        isFocus = true
                         isInputMode = true
                         input = search
                         viewModel.saveSearchData(input: input, global: global)
@@ -116,7 +116,7 @@ struct RecentListView: View {
 
 struct RelatedListView: View {
     
-    let results: [String]  // 필터링된 검색어 목록
+    let results: [String]
     var onSearch: (String) -> Void
     
     var body: some View {
@@ -126,12 +126,12 @@ struct RelatedListView: View {
                 .background(Color(uiColor: .systemGray))
             
             List {
-                ForEach(results, id: \.self) { result in  // ForEach 사용
+                ForEach(results, id: \.self) { result in
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundStyle(Color(uiColor: .systemGray))
                         
-                        Text(result)  // 필터링된 검색어 표시
+                        Text(result)
                             .font(.system(size: 15))
                             .foregroundStyle(Color.black)
                     }
@@ -160,7 +160,6 @@ struct SearchAppView: View {
             List(apps) { app in
                 VStack(alignment: .leading, spacing: 30) {
                     HStack {
-                        // 앱 아이콘
                         AsyncImage(url: URL(string: app.artworkUrl100)) { image in
                             image.resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -192,7 +191,6 @@ struct SearchAppView: View {
                         }
                     }
                     
-                    // 최대 3개의 스크린샷을 표시
                     HStack(spacing: 10) {
                         ForEach(app.screenshotUrls.prefix(3), id: \.self) { url in
                             AsyncImage(url: URL(string: url)) { image in
@@ -224,21 +222,19 @@ struct SearchAppView: View {
     private func starFill(for index: Int, rating: Double) -> Double {
         let starValue = rating - Double(index)
         if starValue >= 1 {
-            return 1.0 // 완전히 채워진 별
+            return 1.0
         } else if starValue > 0 {
-            return starValue // 부분적으로 채워진 별
+            return starValue
         } else {
-            return 0.0 // 채워지지 않은 별
+            return 0.0
         }
     }
     
     private func formattedRatingCount(_ count: Int) -> String {
         if count >= 10_000 {
-            // 만 단위로 표시 (예: 1.1만)
             let formatted = Double(count) / 10_000
             return String(format: "%.1f만", formatted)
         } else {
-            // 10,000 미만일 때는 그냥 숫자로 표시
             return "\(count)"
         }
         
@@ -251,13 +247,11 @@ struct StarView: View {
     
     var body: some View {
         ZStack {
-            // 빈 별 테두리
             Image(systemName: "star")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(.gray)
             
-            // 별점이 1 이상일 때 채워진 별
             if isFilled {
                 Image(systemName: "star.fill")
                     .resizable()
@@ -280,19 +274,19 @@ struct AppDetailView: View {
                         AppDetailTitleView(app: app)
                         Divider()
                         AppDetailScreenView(app: app)
-                        
                     }
-                    .frame(maxHeight: .infinity)
-                    .background(GeometryReader { geo in
+                }
+                .background(
+                    GeometryReader { geo in
                         Color.clear
                             .onAppear {
-                                updateTitleVisibility(geo: geo)
+                                showTitle = geo.frame(in: .global).minY < -10
                             }
-                            .onChange(of: geo.frame(in: .global).minY) { _ in
-                                updateTitleVisibility(geo: geo)
+                            .onChange(of: geo.frame(in: .global).minY) { newValue in
+                                showTitle = newValue < -10
                             }
-                    })
-                }
+                    }
+                )
             }
             .navigationTitle(showTitle ? app.trackName : "")
             .navigationBarTitleDisplayMode(.inline)
@@ -314,11 +308,6 @@ struct AppDetailView: View {
                 }
             }
         }
-    }
-
-    private func updateTitleVisibility(geo: GeometryProxy) {
-        let offset = geo.frame(in: .global).minY
-        showTitle = offset < -10
     }
 }
 
