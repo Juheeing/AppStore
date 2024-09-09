@@ -24,6 +24,8 @@ struct AppData: Codable, Identifiable {
     let userRatingCount: Int?        // 별점 개수
     let description: String     // 앱 설명
     let artworkUrl100: String   // 앱 아이콘
+    let releaseNotes: String
+    let version: String
     
     enum CodingKeys: String, CodingKey {
         case id = "trackId"
@@ -33,5 +35,7 @@ struct AppData: Codable, Identifiable {
         case userRatingCount
         case description = "description"
         case artworkUrl100
+        case releaseNotes
+        case version
     }
 }

@@ -279,20 +279,22 @@ struct AppDetailView: View {
                     VStack(alignment: .leading) {
                         AppDetailTitleView(app: app)
                         Divider()
-                        AppDetailScreenView(app: app)
+                        NewFeaturesView(app: app)
+                        Divider()
+                        ScreenView(app: app)
+                        Divider()
                     }
-                }
-                .background(
-                    GeometryReader { geo in
+                    .frame(maxHeight: .infinity)
+                    .background(GeometryReader { geo in
                         Color.clear
                             .onAppear {
-                                showTitle = geo.frame(in: .global).minY < -10
+                                updateTitleVisibility(geo: geo)
                             }
-                            .onChange(of: geo.frame(in: .global).minY) { newValue in
-                                showTitle = newValue < -10
+                            .onChange(of: geo.frame(in: .global).minY) { _ in
+                                updateTitleVisibility(geo: geo)
                             }
-                    }
-                )
+                    })
+                }
             }
             .navigationTitle(showTitle ? app.trackName : "")
             .navigationBarTitleDisplayMode(.inline)
@@ -314,6 +316,11 @@ struct AppDetailView: View {
                 }
             }
         }
+    }
+
+    private func updateTitleVisibility(geo: GeometryProxy) {
+        let offset = geo.frame(in: .global).minY
+        showTitle = offset < -10
     }
 }
 
@@ -355,31 +362,90 @@ struct AppDetailTitleView: View {
             Spacer()
         }
         .padding(.init(top: 20, leading: 20, bottom: 20, trailing: 20))
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
-struct AppDetailScreenView: View {
+struct NewFeaturesView: View {
+    
+    let app: AppData
+    @State private var isExpanded: Bool = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            Text("새로운 기능")
+                .font(.system(size: 20).bold())
+            
+            Text("버전 \(app.version)")
+                .font(.system(size: 15))
+                .foregroundStyle(Color(uiColor: .systemGray2))
+            
+            Text(isExpanded ? app.releaseNotes : truncatedText(text: app.releaseNotes))
+                .font(.system(size: 15))
+                .lineSpacing(10)
+                .frame(maxHeight: .infinity)
+                .animation(.easeInOut, value: isExpanded)
+            HStack {
+                Spacer()
+                if !isExpanded && numberOfNewLines(text: app.releaseNotes) > 2 {
+                    Button {
+                        isExpanded.toggle()
+                    } label: {
+                        Text("더 보기")
+                            .font(.system(size: 15))
+                            .foregroundColor(Color(uiColor: .systemBlue))
+                    }
+                    .padding(.top, 10)
+                }
+            }
+        }
+        .padding(.init(top: 10, leading: 20, bottom: 10, trailing: 20))
+    }
+    
+    private func numberOfNewLines(text: String) -> Int {
+        return text.components(separatedBy: "\n").count - 1
+    }
+
+    private func truncatedText(text: String) -> String {
+        let components = text.split(separator: "\n", maxSplits: 2, omittingEmptySubsequences: false)
+        
+        if components.count > 2 {
+            let thirdNewlineIndex = components[0...1].joined(separator: "\n").count
+            return String(text.prefix(thirdNewlineIndex))
+        } else {
+            return text
+        }
+    }
+}
+
+struct ScreenView: View {
     
     let app: AppData
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                ForEach(app.screenshotUrls, id: \.self) { url in
-                    AsyncImage(url: URL(string: url)) { image in
-                        image.resizable()
-                            .frame(width: 250, height: 450)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                    } placeholder: {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color(uiColor: .systemGray6))
-                            .frame(width: 250, height: 450)
+        VStack(alignment: .leading, spacing: 10) {
+            Text("미리보기")
+                .font(.system(size: 20).bold())
+                .padding(.leading, 20)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(app.screenshotUrls, id: \.self) { url in
+                        AsyncImage(url: URL(string: url)) { image in
+                            image.resizable()
+                                .frame(width: 250, height: 450)
+                                .clipShape(RoundedRectangle(cornerRadius: 20))
+                        } placeholder: {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color(uiColor: .systemGray6))
+                                .frame(width: 250, height: 450)
+                        }
                     }
                 }
+                .padding(.init(top: 0, leading: 20, bottom: 0, trailing: 20))
+                .frame(maxHeight: .infinity)
             }
-            .padding(.leading, 20)
-            .frame(maxHeight: .infinity)
         }
+        .padding(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
     }
 }
 
