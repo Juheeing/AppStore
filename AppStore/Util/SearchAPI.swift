@@ -27,9 +27,10 @@ class SearchAPI {
             URLQueryItem(name: "entity", value: "software"),
             URLQueryItem(name: "term", value: term)
         ]
-        
+
         guard let url = components.url else {
-            print("URL 생성 실패")
+            let error = NSError(domain: "URLCreationError", code: 0, userInfo: [NSLocalizedDescriptionKey: "URL 생성 실패"])
+            completion(nil, nil, error)
             return
         }
         

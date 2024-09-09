@@ -38,11 +38,17 @@ class SearchViewModel: ObservableObject {
         SearchAPI.searchApps(term: input) { data, response, error in
             DispatchQueue.main.async {
                 global.hideLoading()
+                
+                if let error = error as NSError? {
+                    print("error: \(error.localizedDescription)")
+                    return
+                }
+
                 guard error == nil, let response = response as? HTTPURLResponse, let data = data else {
                     print("네트워크 오류: \(String(describing: error))")
                     return
                 }
-                
+
                 switch response.statusCode {
                 case 200...299:
                     do {
