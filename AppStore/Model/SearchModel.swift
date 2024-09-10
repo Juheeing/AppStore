@@ -26,6 +26,9 @@ struct AppData: Codable, Identifiable {
     let artworkUrl100: String   // 앱 아이콘
     let releaseNotes: String
     let version: String
+    let sellerName: String
+    let contentAdvisoryRating: String
+    let languageCodesISO2A: [String]
     
     enum CodingKeys: String, CodingKey {
         case id = "trackId"
@@ -37,5 +40,8 @@ struct AppData: Codable, Identifiable {
         case artworkUrl100
         case releaseNotes
         case version
+        case sellerName
+        case contentAdvisoryRating
+        case languageCodesISO2A
     }
 }

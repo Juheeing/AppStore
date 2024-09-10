@@ -21,11 +21,14 @@ class SearchAPI {
     // 앱 검색 API 요청 함수
     static func searchApps(term: String, completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
         
+        let currentRegionCode = Locale.current.regionCode ?? "KR"
+        
         var components = urlComponents
         components.path = "/search"
         components.queryItems = [
             URLQueryItem(name: "entity", value: "software"),
-            URLQueryItem(name: "term", value: term)
+            URLQueryItem(name: "term", value: term),
+            URLQueryItem(name: "country", value: currentRegionCode)
         ]
 
         guard let url = components.url else {
