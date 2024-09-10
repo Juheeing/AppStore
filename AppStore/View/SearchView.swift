@@ -78,6 +78,9 @@ struct SearchView: View {
                         input = search
                         viewModel.saveSearchData(input: input, global: global)
                     })
+                    .onAppear {
+                        filteredResults = []
+                    }
                 }
             }
             .background(isInputMode || viewModel.searchComplete ? Color(uiColor: .systemGray6) : Color.white)
