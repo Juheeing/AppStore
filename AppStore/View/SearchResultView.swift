@@ -50,6 +50,17 @@ struct SearchResultView: View {
                                         .foregroundColor(Color(uiColor: .systemGray2))
                                 }
                             }
+                            Spacer()
+                            
+                            Button {
+                                
+                            } label: {
+                                Text("받기")
+                                    .frame(width: 70, height: 30)
+                                    .font(.system(size: 16).bold())
+                                    .foregroundStyle(Color(uiColor: .systemBlue))
+                                    .background(Color(uiColor: .systemGray6), in: Capsule())
+                            }
                         }
                         
                         HStack(spacing: 10) {

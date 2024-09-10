@@ -88,9 +88,13 @@ struct AppDetailTitleView: View {
                     .frame(width: 110, height: 110)
             }
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(app.trackName)
                     .font(.system(size: 20).bold())
+                
+                Text(app.sellerName)
+                    .font(.system(size: 15))
+                    .foregroundStyle(Color(uiColor: .systemGray))
                 
                 Spacer()
                 
