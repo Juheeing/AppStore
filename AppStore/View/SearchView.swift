@@ -67,6 +67,7 @@ struct SearchView: View {
                     SearchResultView(apps: viewModel.searchResults)
                 } else if isFocus {
                     RelatedListView(results: filteredResults, onSearch: { search in
+                        isFocus = false
                         isInputMode = true
                         input = search
                         viewModel.saveSearchData(input: input, global: global)
