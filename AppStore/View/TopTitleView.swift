@@ -37,7 +37,7 @@ struct TopTitleView: View {
     
     private func dateFormatted(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR") // 한국어 로케일 설정
+        formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "M월 d일 EEEE"
         return formatter.string(from: date)
     }
