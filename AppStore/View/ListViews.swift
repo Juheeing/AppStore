@@ -30,6 +30,7 @@ struct RecentListView: View {
                     }
             }
         }
+        .accessibility(identifier: "RecentListView")
         .listStyle(.plain)
     }
 }

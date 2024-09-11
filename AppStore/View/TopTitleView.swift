@@ -22,6 +22,7 @@ struct TopTitleView: View {
                         .foregroundColor(Color(uiColor: .systemGray))
                 }
                 Text(title)
+                    .accessibility(identifier: "TopTitleView")
                     .font(.system(size: 35).bold())
             }
             Spacer()
