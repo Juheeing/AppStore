@@ -18,7 +18,7 @@ class SearchViewModel: ObservableObject {
     @Published var searchResults: [AppData] = []
     @Published var searchComplete: Bool = false
     
-    private let searchesKey = "recentSearches"
+    let searchesKey = "recentSearches"
     
     init() {
         loadSearches()
@@ -75,7 +75,7 @@ class SearchViewModel: ObservableObject {
     }
     
     // 앱 시작 시 UserDefaults에서 검색어 불러오기
-    private func loadSearches() {
+    func loadSearches() {
         if let savedSearches = UserDefaults.standard.array(forKey: searchesKey) as? [String] {
             recentSearches = savedSearches
         }
