@@ -15,7 +15,6 @@ struct RecentListView: View {
     var body: some View {
         List {
             Section(header: Text("최근 검색어")
-                .foregroundStyle(.black)
                 .font(.system(size: 20).bold())) {
                     ForEach(recentSearches, id: \.self) { result in
                         VStack(alignment: .leading) {
@@ -54,7 +53,6 @@ struct RelatedListView: View {
                         
                         Text(result)
                             .font(.system(size: 15))
-                            .foregroundStyle(Color.black)
                     }
                     .onTapGesture {
                         onSearch(result)
@@ -63,6 +61,6 @@ struct RelatedListView: View {
             }
             .listStyle(.plain)
         }
-        .background(Color.white)
+        .background(Color(uiColor: .systemBackground))
     }
 }

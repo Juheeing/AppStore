@@ -104,7 +104,7 @@ struct AppDetailTitleView: View {
                     Text("받기")
                         .frame(width: 70, height: 30)
                         .font(.system(size: 16).bold())
-                        .foregroundStyle(Color.white)
+                        .background(Color(uiColor: .systemBackground))
                         .background(Color(uiColor: .systemBlue), in: Capsule())
                 }
             }

@@ -83,7 +83,7 @@ struct SearchView: View {
                     }
                 }
             }
-            .background(isInputMode || viewModel.searchComplete ? Color(uiColor: .systemGray6) : Color.white)
+            .background(isInputMode || viewModel.searchComplete ? Color(uiColor: .systemGray6) : Color(uiColor: .systemBackground))
             .hiddenNavigationBarStyle()
             .navigationTitle("검색")
         }

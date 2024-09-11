@@ -93,7 +93,7 @@ struct SearchResultView: View {
                 .foregroundStyle(Color(uiColor: .systemGray))
                 .isHidden(hidden: apps.count != 0, remove: true)
         }
-        .background(Color.white)
+        .background(Color(uiColor: .systemBackground))
     }
 }
 
